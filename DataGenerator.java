@@ -11,28 +11,28 @@ Updated for Math290 Reading in Number Theory
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 
 public class DataGenerator
 {  
    private int MIN;
    private int MAX;
-   private List<Integer> totients;
+   private int[] totients;
    
    /** Constructor for DataGenerator */
    public DataGenerator()
    {
-      totients = new ArrayList<Integer>();
-      MIN = 2729; //starting test value
-      MAX = 10000; //ending test value
+      MIN = 2; //starting test value
+      MAX = 100; //ending test value
+      totients = new int[MAX+1];
    }
 
    /** Loads totient values (Euler phi function) */
    private void loadTotients()
    {
       List<Integer> thisFactors = new ArrayList<Integer>();
-      totients.add(1);
-      totients.add(1);
+      totients[0] = 1;
+      totients[1] = 1;
       int totientCounter = 0;
       //for all from 2 through MAX
       for (int i = 2; i<=MAX; i++)
@@ -68,34 +68,35 @@ public class DataGenerator
             if (shouldAdd)
                totientCounter++;
          }
-         totients.add(totientCounter);
+         totients[i] = totientCounter;
       }
    }
    
    /** Calculates the desired values */
    private void calculate()
    {
-      List<Integer> value = new ArrayList<Integer>();
-      List<Integer> loopSizes = new ArrayList<Integer>();
+      int value[];
+      value = new int[MAX+1];
+      int loopSizes[];
+      loopSizes = new int[MAX+1];
       int counter = 0;
       for (int c = MIN; c <= MAX; c++) //how many values to iterate through, start at 2
       {  
-         loopSizes.clear();
+         int loopCounter = 0;
          int maxLoopSize = 0;
          int thisLoopSize = 0;
          for (int b = 1; b < c; b++) //check for each b until c, start at 1
          {
-            value.clear();
-            value.add(1);
+            value[0] = 1;
             counter = 0;
             boolean stop = false;
             while (!stop)
             {
                counter = counter + 1;
-               value.add((value.get(counter-1) * b) % c);
+               value[counter] = (value[counter-1]*b) % c;
                for (int i = 0; i < counter; i++)
                {
-                  if (value.get(i).equals(value.get(counter)))
+                  if (value[i] == value[counter])
                   {
                      stop = true;
                      thisLoopSize = counter - i;
@@ -103,38 +104,39 @@ public class DataGenerator
                }
             }
             //check if repeats at 1 (then is a root of unity)
-            if (value.get(counter) == 1)
+            if (value[counter] == 1)
             {
-               loopSizes.add(thisLoopSize);
+               loopSizes[loopCounter] = thisLoopSize;
+               loopCounter++;
                if (thisLoopSize > maxLoopSize)
                   maxLoopSize = thisLoopSize;
             }
          }
          
          //there should be phi(c) roots of unity (corresponding with units in Z/cZ)
-         if (loopSizes.size() != totients.get(c))
+         if (loopCounter != totients[c])
          {
             //hopefully this line never prints
-            System.out.println("CHECKTOTIENT c = " + c + ";  " + loopSizes.size() + " does not equal " + totients.get(c));
+            System.out.println("CHECKTOTIENT c = " + c + ";  " + loopCounter + " does not equal " + totients[c]);
          }
          
-         System.out.println("c=" + c + "; totient=" + totients.get(c) + "; max root=" + maxLoopSize + "; multiplier=" + totients.get(c)/maxLoopSize);
+         System.out.println("c=" + c + "; totient=" + totients[c] + "; max root=" + maxLoopSize + "; multiplier=" + totients[c]/maxLoopSize);
          
          //sort loop lengths
-         Collections.sort(loopSizes);
+         Arrays.sort(loopSizes, 0, loopCounter);
          
          //print loop lengths
          System.out.print("   ");
-         while(!loopSizes.isEmpty())
+         int index = 0;
+         while (index < loopCounter)
          {
             int howManyRemoved = 0;
-            int size = loopSizes.remove(0);
+            int size = loopSizes[index];
             System.out.print(size + ":");
-            howManyRemoved++;
-            while(loopSizes.contains(size))
+            while(loopSizes[index] == size)
             {
-               loopSizes.remove(new Integer(size));
                howManyRemoved++;
+               index++;
             }
             System.out.print(howManyRemoved + "  ");
          }

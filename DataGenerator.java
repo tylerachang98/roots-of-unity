@@ -12,6 +12,7 @@ Updated for Math290 Reading in Number Theory
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class DataGenerator
 {  
@@ -20,10 +21,10 @@ public class DataGenerator
    private int[] totients;
    
    /** Constructor for DataGenerator */
-   public DataGenerator()
+   public DataGenerator(int minimum, int maximum)
    {
-      MIN = 2; //starting test value
-      MAX = 100; //ending test value
+      MIN = minimum; //starting test value
+      MAX = maximum; //ending test value
       totients = new int[MAX+1];
    }
 
@@ -72,7 +73,7 @@ public class DataGenerator
       }
    }
    
-   /** Calculates the desired values */
+   /** Calculates and prints the desired values */
    private void calculate()
    {
       int value[];
@@ -144,13 +145,23 @@ public class DataGenerator
       }
    }
    
-   /** Calculates and prints the results */
+   /** Calculates and prints the data */
    public static void main(String[] args)
    {  
-      DataGenerator test = new DataGenerator();
+      Scanner scan = new Scanner(System.in);
+      System.out.print("Minumum value: ");
+      int minimum = Integer.valueOf(scan.nextLine());
+      System.out.print("Maximum value: ");
+      int maximum = Integer.valueOf(scan.nextLine());
+      scan.close();
+      
+      DataGenerator test = new DataGenerator(minimum, maximum);
+      System.out.println("MIN = " + test.MIN);
       System.out.println("MAX = " + test.MAX + "\n");
       test.loadTotients();
       System.out.println("Loaded totients.");
+      System.out.println("Current time: " + System.currentTimeMillis());
       test.calculate();
+      System.out.println("End time: " + System.currentTimeMillis());
    }
 }

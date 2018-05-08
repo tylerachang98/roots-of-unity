@@ -11,13 +11,8 @@ import java.io.FileNotFoundException;
 
 public class DataSifter
 {
-   
-   /** Constructor for DataSifter */
-   public DataSifter()
-   {
-   }
 
-   private void readData()
+   public static void siftData(String filename)
    {
       int c = 0;
       int totient = 0;
@@ -26,7 +21,7 @@ public class DataSifter
       List<Integer[]> loopLengths = new ArrayList<Integer[]>();
       
       //creates the scanner and checks if file can be found
-      File textFile = new File("generated_data.txt");
+      File textFile = new File(filename);
       Scanner scanner = null;
       try
       {
@@ -63,6 +58,7 @@ public class DataSifter
                marked = true;
             //END TESTS
             
+            //print if marked by a test
             if (marked)
             {
                System.out.println("CHECK c=" + c + "; totient=" + totient + "; maxRoot=" + maxRoot + "; lists: " + line);
@@ -76,7 +72,6 @@ public class DataSifter
    /** Sifts data */
    public static void main(String[] args)
    {  
-      DataSifter test = new DataSifter();
-      test.readData();
+      DataSifter.siftData("generated_data.txt");
    }
 }
